@@ -1,0 +1,13 @@
+*.zip
+*.log
+*.pdf
+*.xls
+*.jpg
+
+*.class
+
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea/
