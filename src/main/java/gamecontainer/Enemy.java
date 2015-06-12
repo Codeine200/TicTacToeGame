@@ -9,6 +9,10 @@ public class Enemy implements Player {
     private int protectRow;
     private int protectColumn;
 
+    private int countEmptySquare = 0;
+    private int emptySquareRow = -1;
+    private int emptySquareColumn = -1;
+
     public Enemy(Markers value) {
         this.marker = value;
     }
@@ -37,131 +41,150 @@ public class Enemy implements Player {
     }
 
     private boolean isProtectPath(Move value, int row, int column) {
-        Markers marker = area[row][column];
         int SIZE = getSize();
+        int curr_row = row;
+        int curr_column = column;
+        clearEmptySquareData();
         switch (value) {
             case NORTH: {
                 if(row - SIZE + 1 < 0)
                     return false;
 
-                for(int j=0; j<SIZE - 2; j++)
-                    if(area[row - 1 - j][column] != marker)
+                for(int j=0; j<SIZE - 1; j++) {
+                    curr_row = row - 1 - j;
+                    if(!setEmptySquareData(curr_row, curr_column))
                         return false;
-
-                protectRow = row - SIZE + 1;
-                protectColumn  = column;
+                }
                 break;
             }
             case SOUTH: {
                 if(row + SIZE - 1 >= SIZE)
                     return false;
 
-                for(int j=0; j<SIZE - 2; j++)
-                    if(area[row + 1 + j][column] != marker)
+                for(int j=0; j<SIZE - 1; j++) {
+                    curr_row = row + 1 + j;
+                    if (!setEmptySquareData(curr_row, curr_column))
                         return false;
-
-                protectRow = row + SIZE - 1;
-                protectColumn  = column;
+                }
                 break;
             }
             case WEST: {
                 if(column - SIZE + 1 < 0)
                     return false;
 
-                for(int i=0; i<SIZE - 2; i++)
-                    if(area[row][column - 1 - i] != marker)
+                for(int i=0; i<SIZE - 2; i++) {
+                    curr_column = column - 1 - i;
+                    if (!setEmptySquareData(curr_row, curr_column))
                         return false;
-
-                protectRow = row;
-                protectColumn  = column - SIZE + 1;
+                }
                 break;
             }
             case EAST: {
                 if(column + SIZE - 1 >= SIZE)
                     return false;
 
-                for(int i=0; i<SIZE - 2; i++)
-                    if(area[row][column + 1 + i] != marker)
+                for(int i=0; i<SIZE - 1; i++) {
+                    curr_column = column + 1 + i;
+                    if (!setEmptySquareData(curr_row, curr_column))
                         return false;
-
-                protectRow = row;
-                protectColumn  = column + SIZE - 1;
+                }
                 break;
             }
             case NORTH_WEST: {
                 if(row - SIZE + 1 < 0 || column - SIZE + 1 < 0)
                     return false;
 
-                for(int k=0; k<SIZE - 2; k++)
-                    if(area[row - 1 - k][column - 1 - k] != marker)
+                for(int k=0; k<SIZE - 1; k++) {
+                    curr_row = row - 1 - k;
+                    curr_column = column - 1 - k;
+                    if (!setEmptySquareData(curr_row, curr_column))
                         return false;
-
-                protectRow = row - SIZE + 1;
-                protectColumn  = column - SIZE + 1;
+                }
                 break;
             }
             case NORTH_EAST: {
                 if(row - SIZE + 1 < 0 || column + SIZE - 1 >= SIZE)
                     return false;
 
-                for(int k=0; k<SIZE - 2; k++)
-                    if(area[row - 1 - k][column + 1 + k] != marker)
+                for(int k=0; k<SIZE - 1; k++) {
+                    curr_row = row - 1 - k;
+                    curr_column = column + 1 + k;
+                    if (!setEmptySquareData(curr_row, curr_column))
                         return false;
-
-                protectRow = row - SIZE + 1;
-                protectColumn  = column + SIZE - 1;
+                }
                 break;
             }
             case SOUTH_WEST: {
                 if(row + SIZE - 1 >= SIZE  || column - SIZE + 1 < 0)
                     return false;
 
-                for(int k=0; k<SIZE - 2; k++)
-                    if(area[row + 1 + k][column - 1 - k] != marker)
+                for(int k=0; k<SIZE - 1; k++) {
+                    curr_row = row + 1 + k;
+                    curr_column = column - 1 - k;
+                    if (!setEmptySquareData(curr_row, curr_column))
                         return false;
-
-                protectRow = row + SIZE - 1;
-                protectColumn  = column - SIZE + 1;
+                }
                 break;
             }
             case SOUTH_EAST: {
                 if(row + SIZE - 1 >= SIZE  || column + SIZE - 1 >= SIZE)
                     return false;
 
-                for(int k=0; k<SIZE - 2; k++)
-                    if(area[row + 1 + k][column + 1 + k] != marker)
+                for(int k=0; k<SIZE - 1; k++) {
+                    curr_row = row + 1 + k;
+                    curr_column = column + 1 + k;
+                    if (!setEmptySquareData(curr_row, curr_column))
                         return false;
-
-                protectRow = row + SIZE - 1;
-                protectColumn  = column + SIZE - 1;
+                };
                 break;
             }
         }
 
-        return isEmpty(protectRow, protectColumn);
+        if(countEmptySquare == SIZE - 2) {
+            protectRow = emptySquareRow;
+            protectColumn = emptySquareColumn;
+            return true;
+        }
+
+        return false;
     }
 
     private boolean isEmpty(int row, int column) {
         return (area[row][column] == Markers.EMPTY);
     }
 
-    @Override
-    public int getRow() {
-        if(isProtect()) {
-            System.out.println("Comp protected");
-            return  protectRow;
+    private boolean setEmptySquareData(int curr_row, int curr_column) {
+        if(area[curr_row][curr_column] != marker) {
+            if(isEmpty(curr_row, curr_column)) {
+                countEmptySquare++;
+                emptySquareRow = curr_row;
+                emptySquareColumn = curr_column;
+            }
+            return true;
         }
+        return false;
+    }
 
-        return 0;
+    private void clearEmptySquareData() {
+        countEmptySquare = 0;
+        emptySquareRow = -1;
+        emptySquareColumn = -1;
+    }
+
+    private boolean isCenterSquare() {
+        return (isEmpty(1, 1));
     }
 
     @Override
-    public int getColumn() {
+    public Coord getCoord() {
         if(isProtect()) {
             System.out.println("Comp protected");
-            return  protectColumn;
+            return new Coord(protectRow, protectColumn);
         }
-        return 0;
+
+        if(isCenterSquare()) return new Coord(1, 1);
+
+        return null;
     }
 
     @Override

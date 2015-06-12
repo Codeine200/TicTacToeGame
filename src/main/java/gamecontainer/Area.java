@@ -24,15 +24,15 @@ public class Area {
     public GameMessage move(Player player) {
         if(currPlayer == null ||currPlayer.getMarker() != player.getMarker()) {
             if(currPlayer == null) currPlayer = player; // first move
-            int row = player.getRow();
-            int column = player.getColumn();
+            int row = player.getCoord().getRow();
+            int column = player.getCoord().getColumn();
 
             if(!isEmpty(row, column)) return GameMessage.ERROR_NOT_EMPTY_FIELD;
 
+            currPlayer = player;
             setValue(currPlayer.getMarker(), row, column);
             if(isWinner(currPlayer.getMarker())) return  GameMessage.INFO_WINNER;
 
-            currPlayer = player;
             return GameMessage.INFO_SUCCESSFUL_MOVE;
         }
 

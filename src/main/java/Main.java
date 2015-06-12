@@ -25,18 +25,38 @@ public class Main {
         System.out.println(area.move(comp));
         area.show();
 
+        System.out.println("\nStep 3");
+        me.setRow(2);
+        me.setColumn(0);
+        System.out.println(area.move(me));
+        area.show();
 
-/*
         System.out.println("\nStep 4");
-        setValue(Markers.TOE, 1, 0);
-        show();
-        System.out.println(Markers.TOE + " : " + isWinner(Markers.TOE));
+        comp.setArea(area.getArea());
+        System.out.println(area.move(comp));
+        area.show();
 
         System.out.println("\nStep 5");
-        setValue(Markers.CROSS, 0, 0);
-        show();
-        System.out.println(Markers.CROSS + " : " + isWinner(Markers.CROSS));
-*/
+        me.setRow(2);
+        me.setColumn(2);
+        System.out.println(area.move(me));
+        area.show();
+
+        System.out.println("\nStep 6");
+        comp.setArea(area.getArea());
+        System.out.println(area.move(comp));
+        area.show();
+
+        System.out.println("\nStep 7");
+        me.setRow(0);
+        me.setColumn(1);
+        System.out.println(area.move(me));
+        area.show();
+
+        System.out.println("\nStep 8");
+        comp.setArea(area.getArea());
+        System.out.println(area.move(comp));
+        area.show();
     }
 
 

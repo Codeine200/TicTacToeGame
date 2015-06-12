@@ -19,14 +19,14 @@ public class Me implements Player {
         column = value;
     }
 
-    @Override
-    public int getRow() {
-        return row;
+    public void setCoord(int row, int column) {
+        setRow(row);
+        setColumn(column);
     }
 
     @Override
-    public int getColumn() {
-        return column;
+    public Coord getCoord() {
+        return new Coord(row, column);
     }
 
     @Override
