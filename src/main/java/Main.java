@@ -1,6 +1,10 @@
+import controllers.GameController;
 import gamecontainer.*;
+import views.BoardView;
 
-import java.util.Arrays;
+import javax.swing.*;
+import java.awt.*;
+import java.util.Random;
 
 /**
  * Created by Василий on 12.06.2015.
@@ -10,54 +14,26 @@ public class Main {
 
     public static void main(String[] args) {
         System.out.println("Start Game");
-        Area area = new Area(3);
-        Enemy comp = new Enemy(Markers.TOE);
-        Me me = new Me(Markers.CROSS);
 
-        System.out.println("Step 1");
-        me.setRow(0);
-        me.setColumn(0);
-        System.out.println(area.move(me));
-        area.show();
-
-        System.out.println("\nStep 2");
-        comp.setArea(area.getArea());
-        System.out.println(area.move(comp));
-        area.show();
-
-        System.out.println("\nStep 3");
-        me.setRow(2);
-        me.setColumn(0);
-        System.out.println(area.move(me));
-        area.show();
-
-        System.out.println("\nStep 4");
-        comp.setArea(area.getArea());
-        System.out.println(area.move(comp));
-        area.show();
-
-        System.out.println("\nStep 5");
-        me.setRow(2);
-        me.setColumn(2);
-        System.out.println(area.move(me));
-        area.show();
-
-        System.out.println("\nStep 6");
-        comp.setArea(area.getArea());
-        System.out.println(area.move(comp));
-        area.show();
-
-        System.out.println("\nStep 7");
-        me.setRow(0);
-        me.setColumn(1);
-        System.out.println(area.move(me));
-        area.show();
-
-        System.out.println("\nStep 8");
-        comp.setArea(area.getArea());
-        System.out.println(area.move(comp));
-        area.show();
+        javax.swing.SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                createAndShowGUI();
+            }
+        });
     }
 
+    private static void createAndShowGUI() {
+        JFrame frame = new JFrame("TicTacToe Game");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        GameModel model = new GameModel(3);
+        BoardView boardView = new BoardView(3);
+        new GameController(model, boardView);
+
+        frame.getContentPane().add(boardView);
+        frame.setSize(new Dimension(300, 300));
+
+        frame.setVisible(true);
+    }
 
 }
