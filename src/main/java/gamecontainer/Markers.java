@@ -5,7 +5,7 @@ package gamecontainer;
  */
 public enum Markers {
     CROSS('x'),
-    TOE('o'),
+    ZERO('o'),
     EMPTY(' ');
 
     private char s;

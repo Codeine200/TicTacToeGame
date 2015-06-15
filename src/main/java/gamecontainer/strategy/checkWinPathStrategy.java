@@ -13,7 +13,7 @@ public class checkWinPathStrategy extends checkProtectStrategy {
     }
     @Override
     public Coord getPosition() {
-        Markers tempMarker = (marker == Markers.TOE) ? Markers.CROSS : Markers.TOE;
+        Markers tempMarker = (marker == Markers.ZERO) ? Markers.CROSS : Markers.ZERO;
         Coord coord = checkSquareForProtect(tempMarker);
         return (coord != null) ? new Coord(coord.getRow(), coord.getColumn()) : null;
     }

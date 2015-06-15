@@ -48,4 +48,8 @@ public class Enemy implements Player {
     public void addStrategy(StrategyPlayer strategy) {
         strategyList.add(strategy);
     }
+
+    public void removeAllStrategy() {
+        strategyList.clear();
+    }
 }

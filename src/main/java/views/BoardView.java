@@ -16,16 +16,20 @@ import java.util.EventListener;
 public class BoardView extends JPanel {
 
     private JButton[][] squares;
-    private int size;
+    ActionListener listener;
 
     public BoardView(int size) {
+        createBoard(size);
+    }
 
-        this.size = size;
+    public void createBoard(int size) {
+        removeBoard();
         setLayout(new GridLayout(0, size));
         squares = new JButton[size][size];
         for(int i=0; i<size; i++)
             for(int j=0; j<size; j++)
                 add(createSquare(i, j));
+        addSquareActionListener(listener);
     }
 
     private JComponent createSquare(int row, int column) {
@@ -37,23 +41,35 @@ public class BoardView extends JPanel {
     }
 
     public void addSquareActionListener(ActionListener listener) {
-        for(int i=0; i<size; i++)
-            for(int j=0; j<size; j++) {
+        this.listener = listener;
+        for(int i=0; i<squares.length; i++)
+            for(int j=0; j<squares.length; j++) {
                 squares[i][j].addActionListener(listener);
             }
     }
 
     public void setText(String text, int row, int column) {
-        if(row >= 0 && row < size && column >= 0 && column < size) {
+        if(squares != null && row >= 0 && row < squares.length && column >= 0 && column < squares.length) {
             squares[row][column].setText(text);
         }
     }
 
     public void clear() {
-        for(int i=0; i<size; i++)
-            for(int j=0; j<size; j++) {
-                squares[i][j].setText("");
-            }
+        if(squares != null) {
+            for (int i = 0; i < squares.length; i++)
+                for (int j = 0; j < squares.length; j++) {
+                    squares[i][j].setText(" ");
+                }
+        }
+    }
+
+    private void removeBoard() {
+        if(squares != null) {
+            for (int i = 0; i < squares.length; i++)
+                for (int j = 0; j < squares.length; j++) {
+                    remove(squares[i][j]);
+                }
+        }
     }
 
 

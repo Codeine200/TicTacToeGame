@@ -14,6 +14,6 @@ public class centerSquareStrategy extends StrategyPlayer {
     }
     @Override
     public Coord getPosition() {
-        return (isEmpty(1, 1)) ? new Coord(1, 1) : null;
+        return (isEmpty((int)(board.length/2), (int)(board.length/2))) ? new Coord((int)(board.length/2), (int)(board.length/2)) : null;
     }
 }

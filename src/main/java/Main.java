@@ -13,6 +13,7 @@ import java.util.Random;
  */
 public class Main {
 
+    private static int size = 3;
 
     public static void main(String[] args) {
         System.out.println("Start Game");
@@ -30,16 +31,17 @@ public class Main {
         JPanel main = new JPanel();
         main.setLayout(new BorderLayout());
 
-        GameModel model = new GameModel(3);
-        BoardView boardView = new BoardView(3);
+        GameModel model = new GameModel(size);
+        BoardView boardView = new BoardView(size);
         PanelToolsView tools = new PanelToolsView();
+        tools.setN(size);
         new GameController(model, boardView, tools);
 
         main.add(boardView, BorderLayout.CENTER);
         main.add(tools, BorderLayout.SOUTH);
 
         frame.getContentPane().add(main);
-        frame.setSize(new Dimension(300, 300));
+        frame.setSize(new Dimension(450, 450));
 
         frame.setVisible(true);
     }

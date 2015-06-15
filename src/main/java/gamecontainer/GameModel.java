@@ -6,31 +6,37 @@ import java.util.Arrays;
  * Created by Василий on 12.06.2015.
  */
 public class GameModel {
-    private int size = 0;
     private Player currPlayer;
     private Markers[][] area;
     private boolean endGame = false;
 
     public GameModel(int size) {
-        this.size = size;
         area = new Markers[size][size];
+        for(int i=0; i<area.length; i++)
+            Arrays.fill(area[i], Markers.EMPTY);
+    }
+
+    public void setSize(int n) {
         clear();
+        area = new Markers[n][n];
+        for(int i=0; i<area.length; i++)
+            Arrays.fill(area[i], Markers.EMPTY);
     }
 
     public Markers[][] getArea() {
-        return Arrays.copyOf(area, size);
+        return Arrays.copyOf(area, area.length);
     }
 
     public void clear() {
         endGame = false;
         currPlayer = null;
-        for(int i=0; i<size; i++)
+        for(int i=0; i<area.length; i++)
             Arrays.fill(area[i], Markers.EMPTY);
     }
 
     private boolean isFillAllSquares() {
-        for(int i=0; i< size; i++) {
-            for (int j = 0; j < size; j++) {
+        for(int i=0; i< area.length; i++) {
+            for (int j = 0; j < area.length; j++) {
                 if (isEmpty(i, j))
                     return false;
             }
@@ -80,39 +86,39 @@ public class GameModel {
     public boolean isWinner(Markers marker) {
         int count = 0;
         // horizontally
-        for(int i=0; i<size; i++) {
-            for(int j=0; j<size; j++) {
+        for(int i=0; i<area.length; i++) {
+            for(int j=0; j<area.length; j++) {
                 if(area[i][j] == marker) count++;
             }
-            if(count == size) return true;
+            if(count == area.length) return true;
             count = 0;
         }
 
         count = 0;
         // vertical
-        for(int j=0; j<size; j++) {
-            for(int i=0; i<size; i++) {
+        for(int j=0; j<area.length; j++) {
+            for(int i=0; i<area.length; i++) {
                 if(area[i][j] == marker) count++;
             }
-            if(count == size) return true;
+            if(count == area.length) return true;
             count = 0;
         }
 
         // diagonal
         count = 0;
-        for(int i=0; i<size; i++) {
+        for(int i=0; i<area.length; i++) {
             if(area[i][i] == marker) count++;
         }
 
-        if(count == size) return true;
+        if(count == area.length) return true;
 
         // anti diagonal
         count = 0;
-        for(int i=0; i<size; i++) {
-            if(area[i][size-1-i] == marker) count++;
+        for(int i=0; i<area.length; i++) {
+            if(area[i][area.length-1-i] == marker) count++;
         }
 
-        if(count == size) return  true;
+        if(count == area.length) return  true;
         return false;
     }
 }

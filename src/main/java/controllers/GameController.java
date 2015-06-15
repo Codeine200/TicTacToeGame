@@ -15,29 +15,23 @@ import java.awt.event.ActionListener;
 public class GameController {
     GameModel model;
     BoardView boardView;
-    PanelToolsView tools;
+    PanelToolsView toolsView;
 
     Enemy comp;
     Me me;
 
-    public GameController(GameModel model, BoardView boardView, PanelToolsView tools) {
+    public GameController(GameModel model, BoardView boardView, PanelToolsView toolsView) {
         this.model = model;
         this.boardView = boardView;
-        this.tools = tools;
+        this.toolsView = toolsView;
 
-        comp = new Enemy(Markers.TOE);
-
-        comp.addStrategy(new checkWinPathStrategy(model.getArea(), comp.getMarker()));
-        comp.addStrategy(new checkProtectStrategy(model.getArea(), comp.getMarker()));
-        comp.addStrategy(new centerSquareStrategy(model.getArea(), comp.getMarker()));
-        comp.addStrategy(new angleSquareStrategy(model.getArea(), comp.getMarker()));
-        comp.addStrategy(new emptySquareStrategy(model.getArea(), comp.getMarker()));
-
+        comp = new Enemy(Markers.ZERO);
+        voidFillStrategy();
 
         me = new Me(Markers.CROSS);
 
         this.boardView.addSquareActionListener(new SquareListener());
-        this.tools.addButtonListener(new StartGameListener());
+        this.toolsView.addButtonListener(new StartGameListener());
 
     }
 
@@ -47,7 +41,14 @@ public class GameController {
         public void actionPerformed(ActionEvent e) {
             boardView.clear();
             model.clear();
-            tools.setMessage("");
+            toolsView.setMessage("");
+            int n = toolsView.getN();
+            n = (n == 0 || n > 10) ? 3 : n;
+            toolsView.setN(n);
+            model.setSize(n);
+            boardView.createBoard(n);
+            comp.removeAllStrategy();
+            voidFillStrategy();
         }
     }
 
@@ -66,19 +67,16 @@ public class GameController {
             switch(message) {
                 case ERROR_NOT_EMPTY_FIELD:
                 case ERROR_ALREADY_MOVE:
-                    return;
-
                 case INFO_END_GAME:
-                    tools.setMessage("End of game. Start game");
                     return;
 
                 case INFO_WINNER:
                     boardView.setText(me.getMarker().toString(), row, column);
-                    tools.setMessage("You won");
+                    toolsView.setMessage("You won. Start game");
                     return;
 
                 case ERROR_FILL_ALL_FIELD:
-                    tools.setMessage("Dead heat. Start game");
+                    toolsView.setMessage("Dead heat. Start game");
                     return;
 
                 default:
@@ -88,7 +86,7 @@ public class GameController {
             comp.setArea(model.getArea());
             comp.move();
             if(comp.getCoord() == null) {
-                tools.setMessage("Dead heat. Start game");
+                toolsView.setMessage("Dead heat. Start game");
                 return;
             }
 
@@ -96,9 +94,18 @@ public class GameController {
             boardView.setText(comp.getMarker().toString(), comp.getCoord().getRow(), comp.getCoord().getColumn());
             System.out.println(message);
             if(message == GameMessage.INFO_WINNER) {
-                tools.setMessage("You lost");
+                toolsView.setMessage("You lost. Start game");
                 return;
             }
         }
+    }
+
+    private void voidFillStrategy() {
+        comp.addStrategy(new checkWinPathStrategy(model.getArea(), comp.getMarker()));
+        comp.addStrategy(new checkProtectStrategy(model.getArea(), comp.getMarker()));
+        comp.addStrategy(new centerSquareStrategy(model.getArea(), comp.getMarker()));
+        comp.addStrategy(new angleSquareStrategy(model.getArea(), comp.getMarker()));
+        comp.addStrategy(new emptySquareStrategy(model.getArea(), comp.getMarker()));
+
     }
 }
