@@ -9,33 +9,60 @@ public class GameModel {
     private int size = 0;
     private Player currPlayer;
     private Markers[][] area;
+    private boolean endGame = false;
 
     public GameModel(int size) {
         this.size = size;
         area = new Markers[size][size];
-        for(int i=0; i<size; i++)
-            Arrays.fill(area[i], Markers.EMPTY);
+        clear();
     }
 
     public Markers[][] getArea() {
         return Arrays.copyOf(area, size);
     }
 
-    public GameMessage move(Player player, int row, int column) {
-        if(currPlayer == null ||currPlayer.getMarker() != player.getMarker()) {
-            if(currPlayer == null) currPlayer = player; // first move
-            System.out.println(row + ":" + column);
+    public void clear() {
+        endGame = false;
+        currPlayer = null;
+        for(int i=0; i<size; i++)
+            Arrays.fill(area[i], Markers.EMPTY);
+    }
 
-            if(!isEmpty(row, column)) return GameMessage.ERROR_NOT_EMPTY_FIELD;
-
-            currPlayer = player;
-            setValue(currPlayer.getMarker(), row, column);
-            if(isWinner(currPlayer.getMarker())) return  GameMessage.INFO_WINNER;
-
-            return GameMessage.INFO_SUCCESSFUL_MOVE;
+    private boolean isFillAllSquares() {
+        for(int i=0; i< size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (isEmpty(i, j))
+                    return false;
+            }
         }
 
-        return GameMessage.ERROR_ALREADY_MOVE;
+        return true;
+    }
+
+    public GameMessage move(Player player, int row, int column) {
+        if(!endGame) {
+            if(currPlayer == null || currPlayer.getMarker() != player.getMarker()) {
+                if(currPlayer == null) currPlayer = player; // first move
+                System.out.println(row + ":" + column);
+
+                if(!isEmpty(row, column)) return GameMessage.ERROR_NOT_EMPTY_FIELD;
+                if(isFillAllSquares()) {
+                    endGame = true;
+                    return GameMessage.ERROR_FILL_ALL_FIELD;
+                }
+
+                currPlayer = player;
+                setValue(currPlayer.getMarker(), row, column);
+                if(isWinner(currPlayer.getMarker())) {
+                    endGame = true;
+                    return  GameMessage.INFO_WINNER;
+                }
+
+                return GameMessage.INFO_SUCCESSFUL_MOVE;
+            }
+            return GameMessage.ERROR_ALREADY_MOVE;
+        }
+        return GameMessage.INFO_END_GAME;
     }
 
     public boolean setValue(Markers value, int row, int column) {
@@ -147,14 +174,4 @@ public class GameModel {
         return true;
     }
 
-    public void show() {
-        for(int i=0; i< size; i++) {
-            for (int j = 0; j < size; j++) {
-                System.out.print(area[i][j]+" ");
-            }
-            System.out.println("");
-        }
-        System.out.println("-----");
-
-    }
 }

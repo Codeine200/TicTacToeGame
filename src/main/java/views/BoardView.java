@@ -2,10 +2,12 @@ package views;
 
 import controllers.GameController;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
 import java.util.EventListener;
 
 /**
@@ -41,10 +43,17 @@ public class BoardView extends JPanel {
             }
     }
 
-    public void setIcon(String pathImage, int row, int column) {
+    public void setText(String text, int row, int column) {
         if(row >= 0 && row < size && column >= 0 && column < size) {
-            squares[row][column].setIcon(new ImageIcon(pathImage));
+            squares[row][column].setText(text);
         }
+    }
+
+    public void clear() {
+        for(int i=0; i<size; i++)
+            for(int j=0; j<size; j++) {
+                squares[i][j].setText("");
+            }
     }
 
 
