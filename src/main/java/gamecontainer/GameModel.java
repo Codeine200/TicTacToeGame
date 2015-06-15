@@ -77,101 +77,42 @@ public class GameModel {
         return (area[row][column] == Markers.EMPTY);
     }
 
-    public boolean isWinner(Markers value) {
-        for(int i=0; i< size; i++) {
-            for(int j=0; j< size; j++) {
-                if(area[i][j] == value) {
-                    for(Move move : Move.values()) {
-                        if(isWinnerPath(move, i, j))
-                            return true;
-                    }
-                }
+    public boolean isWinner(Markers marker) {
+        int count = 0;
+        // horizontally
+        for(int i=0; i<size; i++) {
+            for(int j=0; j<size; j++) {
+                if(area[i][j] == marker) count++;
             }
+            if(count == size) return true;
+            count = 0;
         }
+
+        count = 0;
+        // vertical
+        for(int j=0; j<size; j++) {
+            for(int i=0; i<size; i++) {
+                if(area[i][j] == marker) count++;
+            }
+            if(count == size) return true;
+            count = 0;
+        }
+
+        // diagonal
+        count = 0;
+        for(int i=0; i<size; i++) {
+            if(area[i][i] == marker) count++;
+        }
+
+        if(count == size) return true;
+
+        // anti diagonal
+        count = 0;
+        for(int i=0; i<size; i++) {
+            if(area[i][size-1-i] == marker) count++;
+        }
+
+        if(count == size) return  true;
         return false;
     }
-
-    public boolean isWinnerPath(Move value, int row, int column) {
-        Markers marker = area[row][column];
-        switch (value) {
-            case NORTH: {
-                if(row - size + 1 < 0)
-                    return false;
-
-                for(int j=0; j< size - 1; j++)
-                    if(area[row - 1 - j][column] != marker)
-                        return false;
-                break;
-            }
-            case SOUTH: {
-                if(row + size - 1 >= size)
-                    return false;
-
-                for(int j=0; j< size - 1; j++)
-                    if(area[row + 1 + j][column] != marker)
-                        return false;
-                break;
-            }
-            case WEST: {
-                if(column - size + 1 < 0)
-                    return false;
-
-                for(int i=0; i< size - 1; i++)
-                    if(area[row][column - 1 - i] != marker)
-                        return false;
-                break;
-            }
-            case EAST: {
-                if(column + size - 1 >= size)
-                    return false;
-
-                for(int i=0; i< size - 1; i++)
-                    if(area[row][column + 1 + i] != marker)
-                        return false;
-                break;
-            }
-            case NORTH_WEST: {
-                if(row - size + 1 < 0 || column - size + 1 < 0)
-                    return false;
-
-                for(int k=0; k< size - 1; k++)
-                    if(area[row - 1 - k][column - 1 - k] != marker)
-                        return false;
-
-                break;
-            }
-            case NORTH_EAST: {
-                if(row - size + 1 < 0 || column + size - 1 >= size)
-                    return false;
-
-                for(int k=0; k< size - 1; k++)
-                    if(area[row - 1 - k][column + 1 + k] != marker)
-                        return false;
-
-                break;
-            }
-            case SOUTH_WEST: {
-                if(row + size - 1 >= size || column - size + 1 < 0)
-                    return false;
-
-                for(int k=0; k< size - 1; k++)
-                    if(area[row + 1 + k][column - 1 - k] != marker)
-                        return false;
-
-                break;
-            }
-            case SOUTH_EAST: {
-                if(row + size - 1 >= size || column + size - 1 >= size)
-                    return false;
-
-                for(int k=0; k< size - 1; k++)
-                    if(area[row + 1 + k][column + 1 + k] != marker)
-                        return false;
-
-                break;
-            }
-        }
-        return true;
-    }
-
 }
